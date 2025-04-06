@@ -52,4 +52,29 @@ def generate_response(prompt):
             return "Error: Unexpected API response format."
 
     except Exception as e:
-        return f"Exception: {
+        return f"Exception: {str(e)}"
+
+# Layout with two columns
+col1, col2 = st.columns([3, 2])
+
+with col1:
+    st.title("💙 CGC Vaidya")
+    st.subheader("Your AI-powered mental health companion at CGC Jhanjeri")
+    user_input = st.text_area("How are you feeling today?", height=250, key="user_input")
+    if st.button("Send", key="send_button"):
+        if user_input.strip() != "":
+            with st.spinner("CGC Vaidya is thinking..."):
+                st.session_state.response = generate_response(user_input)
+        else:
+            st.warning("Please enter your thoughts above before sending.")
+
+with col2:
+    if "response" in st.session_state and st.session_state.response:
+        st.subheader("💬 CGC Vaidya says:")
+        st.markdown(f"""
+        <div style='height: 500px; overflow-y: auto; padding: 15px; background-color: #1e1e2f; border-radius: 10px;'>
+            <p style='white-space: pre-wrap; font-size: 16px; color: #ffffff;'>
+                {st.session_state.response}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
