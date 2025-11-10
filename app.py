@@ -27,7 +27,7 @@ def generate_response(prompt):
     }
 
     data = {
-        "model": "llama-3.1-70b-versatile",
+        "model": "llama-3.1-8b-instant",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt}
@@ -54,24 +54,19 @@ def generate_response(prompt):
     except Exception as e:
         return f"Exception: {str(e)}"
 
-
 # Layout with two columns
 col1, col2 = st.columns([3, 2])
 
 with col1:
     st.title("💙 CGC Vaidya")
     st.subheader("Your AI-powered mental health companion at CGC Jhanjeri")
-
-    # Use a form so pressing Enter submits automatically
-    with st.form(key="chat_form", clear_on_submit=False):
-        user_input = st.text_area("How are you feeling today?", height=250, key="user_input")
-        send_button = st.form_submit_button("Send")
-
-    if send_button and user_input.strip() != "":
-        with st.spinner("CGC Vaidya is thinking..."):
-            st.session_state.response = generate_response(user_input)
-    elif send_button:
-        st.warning("Please enter your thoughts above before sending.")
+    user_input = st.text_area("How are you feeling today?", height=250, key="user_input")
+    if st.button("Send", key="send_button"):
+        if user_input.strip() != "":
+            with st.spinner("CGC Vaidya is thinking..."):
+                st.session_state.response = generate_response(user_input)
+        else:
+            st.warning("Please enter your thoughts above before sending.")
 
 with col2:
     if "response" in st.session_state and st.session_state.response:
